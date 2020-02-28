@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="zh">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+	<title>pickout-纯JS炫酷下拉列表框美化插件|DEMO_jQuery之家-自由分享jQuery、html5、css3的插件库</title>
+	<link rel="stylesheet" type="text/css" href="css/htmleaf-demo.css">
+	<style>
+		*{padding:0;margin:0;}
+		.content {
+			margin:50px auto 0;
+			width:300px;
+			min-height: 500px;
+		}
+
+		.form-group {
+			width:100%;
+			float:left;
+			margin:5px 0;
+		}
+
+		label{
+			margin-bottom:10px;
+			float:left;			
+		}
+
+		.field-input, select{
+			width:calc(100% - 20px);
+			float:left;
+			padding:10px;
+			font-family:inherit;
+		}		
+
+	</style>
+	<link rel="stylesheet" href="css/pickout.css">
+</head>
+<body>
+	<div class="htmleaf-container">
+		<header class="htmleaf-header">
+			<h1>pickout-纯JS炫酷下拉列表框美化插件 <span>Cool and powerful effect to select form fields</span></h1>
+			<div class="htmleaf-links">
+				<a class="htmleaf-icon icon-htmleaf-home-outline" href="http://www.htmleaf.com/" title="jQuery之家" target="_blank"><span> jQuery之家</span></a>
+				<a class="htmleaf-icon icon-htmleaf-arrow-forward-outline" href="http://www.htmleaf.com/jQuery/Form/201604043297.html" title="返回下载页" target="_blank"><span> 返回下载页</span></a>
+			</div>
+		</header>
+		<div class="content -bg">		
+			<form action="#" method="post">
+				<div class="form-group">
+					<label for="name">姓名:</label>
+					<input type="text" name="name" id="name" class="field-input">
+				</div>			
+				<div class="form-group">
+					<label for="city">城市:</label>
+					<select name="city" id="city" class="city pickout" placeholder="选择一个城市">
+						<option data-icon="&spades;" value="bj">北京</option>
+						<option data-icon="&clubs;" value="sh">上海</option>
+						<option data-icon="&hearts;" value="gz">广州</option>
+						<option selected data-icon="&diams;" value="sz">深圳</option>
+						<option data-icon="&#9786;" value="xg">香港</option>
+						<option data-icon="&#9792;" value="sjz">石家庄</option>
+						<option data-icon="&#9794;" value="cd">成都</option>
+					</select>			
+				</div>
+				<div class="form-group">
+					<label for="name2">昵称:</label>
+					<input type="text" name="name2" id="name2" class="field-input">			
+				</div>
+				<div class="form-group">
+					<label for="state">职位:</label>
+					<select name="state" id="state" class="state pickout" placeholder="选择一个职位">
+						<option value="pe">项目经理</option>
+						<option value="pb">工程师</option>
+						<option value="ba">培训师</option>
+						<option value="sp">项目策划</option>
+						<option value="qd">前端开发</option>
+					</select>			
+				</div>		
+			</form>
+		</div>
+		<div class="related">
+		    <h3>如果你喜欢这个插件，那么你可能也喜欢:</h3>
+		    <a href="http://www.htmleaf.com/jQuery/Form/201512182916.html">
+			  <img src="related/1.jpg" width="300" alt="ui-choose|列表选择jQuery美化插件"/>
+			  <h3>ui-choose|列表选择jQuery美化插件</h3>
+			</a>
+			<a href="http://www.htmleaf.com/jQuery/Form/201510032642.html">
+			  <img src="related/2.jpg" width="300" alt="jQuery和CSS3折叠卡片式下拉列表框特效"/>
+			  <h3>jQuery和CSS3折叠卡片式下拉列表框特效</h3>
+			</a>
+		</div>
+	</div>
+	
+	<script src="js/pickout.js"></script>
+	<script>
+
+		// Preparar o select
+		//pickout.to('.pickout');
+		pickout.to({
+			el:'.city',
+			theme: 'dark', 
+			search: true
+		});
+
+		pickout.to({
+			el:'.state',
+			theme: 'clean',
+		});
+
+		// Caso o valor já venha do servidor, já atribui a seleção automaticamente
+		pickout.updated('.city');
+		
+		
+	</script>
+</body>
+</html>

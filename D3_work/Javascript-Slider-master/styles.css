@@ -1,0 +1,122 @@
+body{
+    margin: 0 auto;
+}
+
+#bgWrap{
+    height: 45%;
+    background-color: #191919;
+}
+
+#slideFrame{
+    position: relative;
+    width: 720px;
+    margin: 0 auto;
+    padding: 80px 20px 20px;
+    background: #191919;
+}
+
+#thumbnails{
+    width: 70%;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+}
+
+#thumbnails ul {
+    white-space: nowrap;
+    position: relative;
+    padding: 0px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.main-image{
+    height: 75%;
+    text-align: center;
+}
+
+.thumb-prev {
+    position: absolute;
+    cursor: pointer;
+    bottom: 7%;
+    left: 14%;
+}
+
+.thumb-next {
+    position: absolute;
+    cursor: pointer;
+    bottom: 7%;
+    right: 14%;
+}
+
+.img-caption{
+    color: #555;
+    text-align: center;
+    font-weight: bold;
+    padding: 10px 0;
+}
+
+.thumb{
+    margin: 0 1px;
+    border: 1px solid #333;
+    padding: 4px;
+    background: black;
+    display: inline-block;
+}
+
+.thumb img {
+    border: 1px solid #555;
+    cursor: pointer;
+    width: 70px;
+    height: 31px;
+    opacity: 0.5;
+}
+
+.select-css{
+    border: 1px solid #424242;
+    padding: 2px 0;
+    background-color: white;
+    margin-left: 10px;
+    color: #424242;
+}
+
+.select-css:disabled{
+    color: #BDBDBD;
+    border: 1px solid #BDBDBD;
+}
+
+.config{
+    margin: 2% auto;
+    max-width: 650px;
+}
+
+.config label{
+    line-height: 30px;
+    font-family: monospace;
+}
+
+.config-title{
+    font-family: monospace;
+}
+
+.spinner {
+    display: inline-block;
+    height: 25px;
+    width: 25px;
+    margin: 5px auto;
+    position: relative;
+    -webkit-animation: rotation .6s infinite linear;
+    -moz-animation: rotation .6s infinite linear;
+    -o-animation: rotation .6s infinite linear;
+    animation: rotation .6s infinite linear;
+    border-left: 5px solid rgba(96, 171, 89, 0.1);
+    border-right: 5px solid rgba(96, 171, 89, 0.15);
+    border-bottom: 5px solid rgba(96, 171, 89, 0.15);
+    border-top: 5px solid #324A54;
+    border-radius: 100%;
+}
+
+@-webkit-keyframes rotation{from{-webkit-transform:rotate(0)}to{-webkit-transform:rotate(359deg)}}
+@-moz-keyframes rotation{from{-moz-transform:rotate(0)}to{-moz-transform:rotate(359deg)}}
+@-o-keyframes rotation{from{-o-transform:rotate(0)}to{-o-transform:rotate(359deg)}}
+@keyframes rotation{from{transform:rotate(0)}to{transform:rotate(359deg)}}

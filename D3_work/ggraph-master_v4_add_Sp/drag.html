@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div id="main" class="main"></div>
+    <script src="index.js"></script>
+	<script src="jquery.min.js"></script>
+	<script src="d3.v4.min.js"></script>
+    <script>
+	var temp;
+	var select;
+	document.addEventListener("DOMContentLoaded",function(){
+				select = new $Selector({
+                eleSelector:"#main",
+                options:[
+                    {name:"选项1",value:"0"},
+                    {name:"选项2",value:"1"},
+                    {name:"选项3",value:"2"}
+                ],
+                defaultText:"选项2"
+            });
+        })
+				
+	var merge1 = function() {
+	d3.json("name_list.json", function(error, con) {
+	temp=con;
+	console.log(temp);
+            });}
+	d3.interval(function() {
+	console.log(select);
+	if(select !=undefined)
+	{
+	console.log(temp);
+	select.options(temp);
+	}
+	},100)
+	merge1();
+	
+
+	</script>
+	
+</body>
+</html>

@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body,html, svg, #container {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        font-family: verdana;
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+      }
+
+      #controls {
+        position:absolute;
+        top:0;
+        left:0px;
+        padding:4px;
+        border-bottom: 1px solid #ccc;
+        width:100%;
+        font-size: 0.7em;
+      }
+
+      #controls input {
+        font-size:14px
+      }
+
+      #controls input[type="button"],
+      #controls input[type="submit"] {
+        font-size:18px
+      }
+    </style>
+    <link rel="stylesheet" href="src/ggraph.css" />
+    <script src="d3.v4.min.js"></script>
+    <script src="src/marker/marker.js"></script>
+
+    <script src="ext/simmelian.js"></script>
+    <script src="ext/singles.js"></script>
+
+    <script src="src/algorithms/ladjust.js"></script>
+    <script src="src/algorithms/makecluster.js"></script>
+
+    <script src="src/modules/labels.js"></script>
+    <script src="src/modules/groups.js"></script>
+    <script src="src/modules/nodes.js"></script>
+    <script src="src/modules/selection.js"></script>
+
+    <script src="src/modules/member_lines.js"></script>
+
+    <script src="src/modify/merger.js"></script>
+    <script src="src/modify/splitter.js"></script>
+    <script src="src/modify/remover.js"></script>
+	<script src="src/modify/remover_onenode.js"></script>
+	
+    <script src="src/ggraph.js"></script>
+	<script src="jquery.min.js"></script>
+    <script src="js/jackwei.slider.js"></script>
+	<script src="d3-legend.min.js"></script>
+    <title>ggraph demo</title>
+  </head>
+  <body>
+    <div id="controls">
+      <input type="radio" name="mode" value="select" checked="checked" id="mode-select" onclick="ggraph.set_mode('select')"> <label for="mode-select">Select</label>
+      &nbsp;
+      <input type="radio" name="mode" value="drag" id="mode-drag" onclick="ggraph.set_mode('drag')"> <label for="mode-drag">Drag</label>
+      |
+	  <input type="button" value="legend" onclick="legend()" />
+      <input type="button" value="Remove" onclick="remove()" />
+	  Threshold:(suggest 0-50)
+      <input type="text" placeholder="20" id="threshold" />
+      <input type="button" value="Add comment" onclick="_set_comment()"	  />
+      |
+      Nodes: <span id="node-count">0</span>
+      Edges: <span id="edge-count">0</span>
+	  |
+	  Node_information: <span id="Node_information">0</span>
+    </div>
+    <div id="container"></div>
+	<div id="sliderParent" style="position: fixed; bottom:0;background-color: gray;margin-left:0px">
+  </body>
+  <script>
+	var pro=1980;
+	var l_pro=1981;
+	var l_thre=20;
+	var num_1=0;
+	var node_,link_;
+	var type_array=[];
+	document.getElementById('threshold').value=20;
+	
+				var t = Date.now();
+	
+	function sleep(d){
+
+		while(Date.now - t <= d);
+
+	} 
+	sleep(100);
+	ggraph.init('container', 25);
+	var all;
+    var selected;
+    var graph;
+    var converted;
+    var type = null;
+	var temp=0
+
+    var merge = function() {
+      ggraph.merge(selection.all());
+    }
+
+    var remove = function(time) {
+      var s = [];
+      for (var k in selected) {
+        s.push({id: k})
+      }
+      ggraph.remove(s);
+    }
+
+    var split = function() {
+      ggraph.split(all);
+    }
+
+    function _singles(e) {
+      var groups = singles.get_groups(converted);
+      all = groups;
+      ggraph.merge(groups);
+    };
+
+    function _backbones(e) {
+      var res = simmelian.filter(converted.all_links, 0.75);
+      ggraph.filter_links(res);
+    };
+
+    function _set_comment() {
+      if (selection.all().length === 0) return;
+      var comment = document.getElementById('comment').value;
+      var mock = ggraph.convert({
+        nodes: [{id: comment, type: 'comment'}],
+        links: []
+      });
+
+      var original = ggraph.get_graph();
+      var comment_obj = mock.nodes[0];
+
+      original.nodes.push(comment_obj);
+
+      for (var key in mock.member_map) {
+        original.member_map[key] = mock.member_map[key];
+      }
+
+      for (var key in mock.group_map) {
+        original.group_map[key] = original.nodes.length - 1;
+      }
+
+      document.getElementById('comment').value = '';
+
+      original.all_links[comment] = {}
+
+      var tx = 0;
+      var ty = 0;
+
+      selection.all().map(function(thing) {
+        var group_id = original.member_map[thing.id].group;
+        var target = original.nodes[original.group_map[group_id]];
+        tx += target.x;
+        ty += target.y;
+
+        original.all_links[comment][thing.id] = 1;
+        original.links.push({
+          source: comment_obj,
+          target: target,
+          value: 1
+        })
+      });
+
+      comment_obj.x = tx / selection.all().length;
+      comment_obj.y = ty / selection.all().length;
+
+      ggraph.draw(original);
+
+      selection.clear();
+    }
+
+	
+	function node_average(node)
+	{
+	var original = ggraph.get_graph();
+	var links=original.links;
+	var tx=0;var ty=0;var total_num=0;
+	links.map(function(link,index,array) {
+	if(link.source.id==node.id)
+	{ tx+=link.source.x;ty+=link.source.y;total_num++}
+	if(link.target.id==node.id)
+	{ tx+=link.target.x;ty+=link.source.y;total_num++}
+	})
+	if(total_num==0) 
+	total_num=total_num;
+	else 
+	{
+	node.x=tx/total_num+Math.ceil(Math.random()*10);
+	node.y=ty/total_num+Math.ceil(Math.random()*10);
+	}
+	return node;
+	}
+		
+		
+	function add_node(node) {
+      var mock = ggraph.convert({
+        nodes: [node],
+        links: []
+      });
+	  comment=node.id;
+      var original = ggraph.get_graph();
+      var comment_obj = mock.nodes[0];
+
+      original.nodes.push(comment_obj);
+
+      for (var key in mock.member_map) {
+        original.member_map[key] = mock.member_map[key];
+      }
+
+      for (var key in mock.group_map) {
+        original.group_map[key] = original.nodes.length - 1;
+      }
+
+
+      original.all_links[comment] = {}
+	  
+	  var tx=0;
+	  var ty=0;
+	  var i=0;
+      original.nodes.map(function(thing,index,array) {
+	    i++;
+		if(index<array.length)
+		{
+        var group_id = original.member_map[thing.id].group;
+        var target = original.nodes[original.group_map[group_id]];
+        tx += target.x;
+        ty += target.y;
+		}
+      });
+
+      comment_obj=node_average(comment_obj);
+      ggraph.graph=original;
+	  ggraph.draw(ggraph.get_graph())
+
+    }
+	
+	function show() {
+      		
+		var original={}
+		//deletenode
+		pro=pro+1;
+		var original = ggraph.get_graph();
+		var temp=[]
+		var old=[]
+		var s = []
+		node_.map(function(thing,index,array){
+		temp.push(thing.id)})
+		original.nodes.map(function(thing,index,array) {
+		if (!temp.includes(thing.id)) 
+		{		
+				s.push({id: thing.id})
+		}})
+		legend();
+		if(!(s.length==0))
+		ggraph.remove(s);
+
+		original.nodes.map(function(thing,index,array) {
+				old.push(thing.id)})
+		node_.map(function(thing,index,array){
+		if (!old.includes(thing.id)) 
+		{		
+			add_node(thing);
+		}})
+		
+		var graph={};
+		graph['nodes']=node_
+		graph['links']=link_
+		temp=ggraph.convert(graph);
+		
+		var original = ggraph.get_graph();
+		original.all_links={}
+		original.all_links=temp.all_links;
+		links=[]
+		temp.links.map(function(thing,index,array) {
+		  nodet=original.nodes;
+		  var source=thing.source;
+		  var target=thing.target;
+		  original.nodes.map(function(thing1,index,array) {
+		  if (thing1.id==source.id)
+		  {
+		  source=thing1;
+		  }
+		  if (thing1.id==target.id)
+		  {
+		  target=thing1;
+		  }
+		  })
+		  links.push({
+          source: source,
+          target: target,
+          value: 1
+		})
+		
+		})
+		original.links=[]
+		original.links=links;
+		ggraph.graph=original;
+		ggraph.draw(ggraph.get_graph())
+	
+	}
+	
+	function legend() {
+		var svg = d3.select("svg");
+		var color = d3.scaleOrdinal(d3.schemeCategory20);
+		var h=0;
+		var str_array=type_array;
+		for(var i=0;i<=19;i++)
+		{
+		if(!(document.getElementById("circle"+i)==null))
+		document.getElementById("circle"+i).remove();
+		if(!(document.getElementById("text"+i)==null))
+		document.getElementById("text"+i).remove();
+		}
+
+		for(var i=0;i<str_array.length;i++)
+		{
+		for(var j=i+1;j<str_array.length;j++)
+		{
+		if(str_array[j].length>str_array[i].length)
+		{
+		var temp=0; temp=str_array[i]; str_array[i]=str_array[j];str_array[j]=temp;
+		}
+		}
+		}
+		for(var i=0;i<str_array.length;i++)
+		{
+		svg.append("circle").attr("cx",20).attr("cy",60+i*20).attr("r", 6).style("fill", color(str_array[i])).attr("id", 'circle'+i)
+		svg.append("text").attr("x", 40).attr("y", 65+i*20).text(str_array[i]).style("font-size", "15px").attr("alignment-baseline","right").attr("id", 'text'+i)
+	}
+    }
+	
+	d3.json("data.json", function(error, con) {
+       if (error) throw error;
+	   
+	d3.interval(function() { 
+		var threshold=parseInt(document.getElementById('threshold').value);
+		if (l_pro!=pro || threshold!=l_thre)
+		{
+		var nodes = con.nodes,
+         nodeById = d3.map(nodes, function(d) { return d.id; }),
+         links = con.links,
+         value = links.map(function(d){return d.value}),
+
+       l = []
+	   var link_id_list=[];
+       links.forEach(function(link) {
+           var s = nodeById.get(link.source),
+               t = nodeById.get(link.target),
+               v = link.weight,
+               y = link.year;
+		   if (y==pro){
+		   if(link.weight<threshold)
+		   {
+           l.push({source: link.source, target: link.target}); 
+		   link_id_list.push(link.source);
+		   link_id_list.push(link.target);
+		   }
+		   }
+         });
+
+       link_ = l
+	   
+	   l = []
+	   type_array=[];
+	   console.log(link_id_list);
+       nodes.forEach(function(node) {
+           var i = node.id;
+			   y = node.year;
+			   t = node.type;
+		   if (y==pro){
+		   if(link_id_list.includes(node.id))
+		   {
+		   
+		   var str=' age:'+node.details.age+' location:'+node.details.location+' org&&position:'+node.details.organization+'&&'+node.details.position;
+           l.push({id: i,type:t,details:str});
+		   if (!type_array.includes(t))
+			{
+			type_array.push(t);
+			}
+			} 
+		   }
+         });
+	   console.log(l);
+	   legend();
+       node_ = l
+	   l_pro=pro;
+	   if(l_thre!=threshold){
+	   l_thre=threshold;show()}
+	   }
+	   
+	   if (num_1==0) {	 
+	   var graph={};
+		graph['nodes']=
+		node_
+		graph['links']=
+		link_
+	converted = ggraph.convert(graph);
+	ggraph.draw(converted);
+	   num_1=1;
+	   }
+	document.getElementById('node-count').innerHTML = node_.length;
+    document.getElementById('edge-count').innerHTML = link_.length;
+       },100)
+	   
+	   }  )
+	   
+    var option = {
+        color: 'deepskyblue',
+        width: '1500px',
+        progress: 0.3,
+        handleSrc: 'img/slider_handle.png',
+        isCustomText: false
+    };
+
+	
+    $('#sliderParent')
+        .jackWeiSlider(option)
+        // .setText('2018-4-5 02:39:00')
+        .setProgress(0)
+        .setOnStartDragCallback(function () {
+        })
+        .setOnDragCallback(function (p) {
+		pro=parseInt(1980+38*this.progress)
+		show();
+        })
+        .setOnStopDragCallback(function () {
+        });
+
+		
+
+  </script>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>$Title$</title>
+	<link rel="stylesheet" type="text/css" href="css/base.css"/>
+	<script type="text/javascript" src="js/d3.v4.js"></script>
+	<script type="text/javascript" src="js/line.js"></script>
+</head>
+<body>
+<script>
+	var dataX = ['周一', '周二', '周三', '周四', '周五', '周六', '周日'];
+	var dataY = [{name: '邮件营销', data:[120, 132, 101, 134, 90, 230, 210]},
+								{name: '联盟广告', data:[340, 314, 292, 368, 380, 560, 520]},
+								{name: '视频广告', data:[490, 546, 493, 522, 570, 890, 930]},
+								{name: '直接访问', data:[810, 878, 794, 856, 960, 1220, 1250]},
+								{name: '搜索引擎', data:[1640, 1864, 1802, 1868, 2580, 2660, 2640]}]
+	var line = new Line();
+	line
+		.dataX(dataX)
+		.dataY(dataY)
+		.render()
+	// setInterval(() => {
+	// 	series = series.map((d,i) => {
+	// 		return {
+	// 			name: d.name,
+	// 			data: new Array(7).fill(1).map((dd, ii) => {
+	// 				return Math.floor(Math.random() * 200) + i * 200
+	// 			})
+	// 		}
+	// 	})
+	// 	console.log(series);
+	// 	line
+	// 	.dataX(dataX)
+	// 	.series(series)
+	// 	.render()
+	// }, 4000)
+</script>
+</body>
+</html>

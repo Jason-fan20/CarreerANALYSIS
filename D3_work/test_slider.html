@@ -1,0 +1,73 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+
+	<title>´óÆÁÄ»</title>
+  	<style type="text/css">
+  		.sliderBox{height:12em;position:relative;overflow: hidden;}
+  		.slider{position:absolute;width:100%;height:100%;} 
+		.slider li{position:absolute;top:0;left:0;width:100%;height:100%;}
+		.slider li:nth-of-type(2){left:100%;}
+		.slider li:nth-child(3){left:200%;}
+		.slider li img{height:12em;}
+
+		.animate-slider{
+			animation: slider 12s linear infinite 0s alternate;
+			-webkit-animation: slider 12s linear infinite 0s alternate;
+		}
+		/*
+		@keyframes slider {
+			0% {left:0;}
+			25%{left:0;}
+			33.3%{left:-100%;}
+			66.6%{left:-100%;}
+			75%{left:-200%;}
+			100%{left:-200%}
+		}
+
+		@-webkit-keyframes slider {
+			0% {left:0;}
+			25%{left:0;}
+			33.3%{left:-100%;}
+			66.6%{left:-100%;}
+			75%{left:-200%;}
+			100%{left:-200%}
+		}
+		*/
+		@keyframes slider {
+			0% {transform:translateX(0);}
+			25%{transform:translateX(0)}
+			33.3%{transform:translateX(-100%);}
+			66.6%{transform:translateX(-100%);}
+			75%{transform:translateX(-200%);}
+			100%{transform:translateX(-200%);}
+		}
+		@-webkit-keyframes slider {
+			0% {-webkit-transform:translateX(0);}
+			25%{-webkit-transform:translateX(0)}
+			33.3%{-webkit-transform:translateX(-100%);}
+			66.6%{-webkit-transform:translateX(-100%);}
+			75%{-webkit-transform:translateX(-200%);}
+			100%{-webkit-transform:translateX(-200%);}
+		}
+  	</style>
+</head>
+<body>
+	<section  style="margin-top: 50px;">
+		<div style="position:fixed;top:0;left:0;height:50px;width:100%;background: #dcc;">ºÚÉ«3</div>
+		<div>
+			<div class="sliderBox">
+				<ul class="slider animate-slider">
+					<li><a><img src="images/0888.jpg" /></a></li>
+					<li><a><img src="images/dao_bg.gif" /></a></li>
+					<li><a><img src="images/footer.png" /></a></li>
+				</ul>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

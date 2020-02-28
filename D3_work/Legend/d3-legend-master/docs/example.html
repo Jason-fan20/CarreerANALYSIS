@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<meta charset="utf-8" />
+<style>
+  body {
+    margin: 0;
+    overflow: hidden;
+  }
+
+  svg {
+    font: 10px sans-serif;
+  }
+
+  .caption {
+    font-weight: bold;
+  }
+
+  .key path {
+    display: none;
+  }
+
+  .key line {
+    stroke: #000;
+    shape-rendering: crispEdges;
+  }
+</style>
+<body>
+  <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="../d3-legend.min.js"></script>
+  <script>
+      formatPercent = d3.format(".0%"),
+      formatNumber = d3.format(".0f")
+
+    var svg = d3
+      .select("body")
+      .append("svg")
+    
+	d3.select('svg')
+	  .attr("width", width)
+      .attr("height", height);
+
+    var colorLegendG__3 = d3
+      .select("svg")
+      .append("g")
+      .attr("class", "color-legend")
+      .attr("transform", "translate(40, 160)")
+    var colorScale__3 = d3.scaleOrdinal(d3.schemeCategory10).domain(['as', 8,9])
+
+    var colorLegend__3 = d3
+      .legendColor()
+      .scale(colorScale__3)
+	  .orient("horizontal")
+      .shapePadding(3)
+      .shapeWidth(10)
+      .shapeHeight(10)
+      .labelOffset(4)
+      .on("cellclick", function(d, e) {
+        // Determine if current line is visible
+        console.log(d, e)
+        var active = d.active ? false : true,
+          newOpacity = active ? 0 : 1
+        // Hide or show the elements based on the ID
+        d3.select("#tag" + d.key.replace(/\s+/g, ""))
+          .transition()
+          .duration(100)
+          .style("opacity", newOpacity)
+        // Update whether or not the elements are active
+        d.active = active
+      })
+
+    // var nested__3 = d3
+    //   .nest()
+    //   .key(function(d) {
+    //     return d.lineColumn__3
+    //   })
+    //   .entries(data.data)
+
+    // Loop through each symbol / key
+    // nested__3.forEach(function(d, i) {
+    //   //UUSI
+
+    //   colorScale__3.domain(
+    //     nested__3.map(function(d) {
+    //       return d.key
+    //     })
+    //   )
+
+    
+	
+    // })
+  </script>
+</body>

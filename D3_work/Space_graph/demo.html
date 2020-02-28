@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+   <head>
+       <meta charset = "utf8">
+       <title>JS实现下拉菜单的功能</title>
+       <style>
+          
+           .mynav>ul{
+               list-style-type:none;
+               padding:0;
+               
+         }
+         .mynav>ul>li{
+               float:left;
+               margin:10px 20px ;
+               color:white;
+               
+              }
+         .mynav>ul>li>a{
+            text-decoration:none;
+            color:white;
+            }
+          .dropdown-m{
+               position:absolute;
+               z-index:99;
+               list-style:none;
+               margin-top:10px;
+               padding:10px;
+               font-size:20px;
+               border:0px solid black;
+               float: none;
+               display:none;
+               box-shadow: 10px 10px 5px #888888;
+               background:lightblue;
+               
+               
+           }
+          
+          .dropdown-m a{
+               text-decoration:none;
+               color:white;
+               padding:10px;
+               width:100px;
+               display: block;
+         }
+         .dropdown-m li:hover{
+            background:blue;
+            
+            
+         }
+         .content{
+               margin:40px;
+           }
+         button{
+               cursor: pointer;
+                   
+               border: none;
+               outline: none;
+               color: white;
+               
+               background-color: inherit;
+        }
+         .show{
+          display:block;//用于class切换
+           }
+       </style>
+   </head>
+   <body>
+        <div class="container" style="background:lightgrey;height:800px">
+            <nav class="mynav" style="background:black;">
+               <ul>
+                  <li><a href="#">首页</a></li>
+                  <li><a href="#">WEB</a></li>
+                  <li><a href="#">算法</a></li>
+                  <li >
+                        
+                         <button onclick="showtoggle()">前端内容</button>
+                        
+                      
+                        <ul class="dropdown-m" id="dropdown">
+                            <li><a href="#">HTML</a><li>
+                            <li><a href="#">CSS</a><li>
+                            <li><a href="#">JavaScript</a><li>
+                            <li><a href="#">node.js</a><li>
+                         </ul>
+                 </li>
+               </ul>
+               <div  style="clear:both"></div>
+               
+            </nav>
+             
+            <div class="content">
+                  <dl>
+                      <dt>js简介<dt>
+                      
+                          <dd> JavaScript 是脚本语言</dd>
+                          <dd>JavaScript 是一种轻量级的编程语言。</dd>
+
+                          <dd>JavaScript 是可插入 HTML 页面的编程代码。</dd>
+
+                          <dd> JavaScript 插入 HTML 页面后，可由所有的现代浏览器执行。</dd>
+
+                          <dd> JavaScript 很容易学习。</dd>
+                      
+                  <dl>
+            </div>
+        </div>
+       <script>
+          //实现切换，hover也是可以，不用这么麻烦
+           function showtoggle(){
+              document.getElementById("dropdown").classList.toggle("show");
+            }
+//点击其他区域也关闭
+          window.onclick=funtuion=function(e){
+               if(!e.target.matches("button")){
+                   var dropdown = document.getElementById("dropdown");
+                 if (dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+}}
+         }
+       </script>
+   </body>
+</html>

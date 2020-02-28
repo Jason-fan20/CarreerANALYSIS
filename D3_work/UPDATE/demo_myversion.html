@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        .link line.separator {
+            stroke: #fff;
+            stroke-width: 2px;
+        }
+
+        .node circle {
+            stroke: #000;
+            stroke-width: 1.5px;
+        }
+
+        .node text {
+            font: 10px sans-serif;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
+    <script>
+        var width = 1900,
+            height = 900;
+
+        var color = d3.scale.category10(); // 构造一个 10 种颜色的序数比例尺
+        // color()只需要传入a-z字母即可获取对应的颜色 k==>a  循环
+        var radius = d3.scale.sqrt() // 构建一个平方根比例尺
+            .range([0, 6]); //构造一个新的乘方比例尺，输入值域默认为[0,1],输出范围默认为[0,1],指数默认为0.5。这种方法可以简记为: d3.scale.pow().exponent(.5)
+
+        var svg = d3.select("body").append("svg")
+            .attr("width", width)
+            .attr("height", height);
+
+        var force = d3.layout.force() // - 使用物理模拟排放链接节点的位置
+            .size([width, height])
+            .charge(-1500) // 取得或者设置电荷强度
+            .linkDistance(180);
+
+        d3.json("index.json", function (error, graph) {
+            if (error) throw error;
+            var edges = [];
+            graph.links.forEach(
+                function (e) {
+                    var sourceNode = graph.nodes.filter(function (n) {
+                            return n.id === e.source;
+                        })[0],
+                        targetNode = graph.nodes.filter(
+                            function (n) {
+                                return n.id === e.target;
+                            })[0]
+
+                    edges.push({
+                        source: sourceNode,
+                        target: targetNode,
+                        bond: e.bond
+                    });
+                }
+            );
+            force
+                .nodes(graph.nodes) // 取得或者设置布局的节点数组
+                .links(edges) // 取得或者设置节点间的链接数组
+                .on("tick", tick) // 监听在计算布局位置时的更新  执行tick函数
+                .start(); // 当节点变化时启动或者重启模拟
+
+            //  玩箭头
+            var marker =
+                svg.append("marker")
+                .attr("id", "arrows")
+                .attr("markerUnits", "userSpaceOnUse")
+                .attr("viewBox", "0 -5 10 10") //坐标系的区域
+                .attr("refX", 32) //箭头坐标
+                .attr("markerWidth", 12) //标识的大小
+                .attr("markerHeight", 12)
+                .attr("orient", "auto") //绘制方向，可设定为：auto（自动确认方向）和 角度值
+                .attr("stroke-width", 2) //箭头宽度
+                .append("path")
+                .attr("d", "M0,-5L10,0L0,5") //箭头的路径
+                .attr('fill', '#bbb'); //箭头颜色
+
+
+            // 玩line    
+            var link = svg.selectAll(".link")
+                .data(edges)
+                .enter().append("path")
+                .attr({
+                    'd': function (d) {
+                        return 'M ' + d.source.x + ' ' + d.source.y + ' L ' + d.target.x + ' ' + d.target
+                            .y
+                    },
+                    'class': 'edgepath',
+                    'id': function (d, i) {
+                        return 'edgepath' + i;
+                    }
+                })
+                .style('stroke', "#121212")
+                .style('stroke-width', .5)
+                .attr("class", "link")
+                .attr("marker-end", "url(#resolved)");
+
+            // 玩线上文字
+
+            var edges_text = svg.selectAll(".edgelabel")
+                .data(edges)
+                .enter()
+                .append("text")
+                .attr({
+                    'class': 'edgelabel',
+                    'id': function (d, i) {
+                        return 'edgepath' + i;
+                    },
+                    'dx': 80,
+                    'dy': 0
+                    //'font-size':10,
+                    //'fill':'#aaa'
+                })
+            //设置线条上的文字
+            edges_text.append('textPath')
+                .attr('xlink:href', function (d, i) {
+                    return '#edgepath' + i
+                })
+                .style("pointer-events", "none")
+                .text(function (d) {
+                    return '关系';
+                });
+
+            // 玩 node
+            var node = svg.selectAll(".node")
+                .data(graph.nodes)
+                .enter().append("g")
+                .attr("class", "node")
+                .call(force.drag); // 为当前选择调用一个函数。  给节点绑定拖动行为
+
+            node.append("circle") // 设置圆圈的样式
+                .attr("r", '25')
+                .style("fill", function (d) { // 填充颜色 
+                    var color = ''
+                    switch (d.atom) {
+                        case 'C':
+                            color = '#429AF1';
+                            break;
+                        case 'O':
+                            color = '#2Aa3D4';
+                            break;
+                        case 'H':
+                            color = '#A1c1FF';
+                            break;
+                    }
+                    return color;
+                })
+                .style('stroke', function (d) {
+                    var color = ''
+                    switch (d.atom) {
+                        case 'C':
+                            color = '#2299F8';
+                            break;
+                        case 'O':
+                            color = '#2A93D8';
+                            break;
+                        case 'H':
+                            color = '#d191F4';
+                            break;
+                    }
+                    return color;
+                })
+                .on('click', function (node) {
+                    link.style('stroke', function (line) {
+                        if (line.source.id == node.id || line.target.id == node.id) {
+                            return 'red'
+                        } else {
+                            return '#121212'
+                        }
+                    })
+                });
+
+            node.append("text")
+                .attr("dy", ".35em")
+                .attr("text-anchor", "middle") // 文本锚点属性被用来描述该文本与所给点的对齐方式 (开头、中间、末尾对齐) 。
+                .text(function (d) { // 确定节点的文字
+                    return d.word;
+                }).style('fill', function (d) {
+                    var color = ''
+                    switch (d.atom) {
+                        case 'C':
+                            color = '#010141';
+                            break;
+                        case 'O':
+                            color = '#010508';
+                            break;
+                        case 'H':
+                            color = '#021425';
+                            break;
+                    }
+                    return color;
+                });
+
+            function tick() {
+                // 更新线
+                link.selectAll("line")
+                    .attr("x1", function (d) {
+                        return d.source.x;
+                    })
+                    .attr("y1", function (d) {
+                        return d.source.y;
+                    })
+                    .attr("x2", function (d) {
+                        return d.target.x;
+                    })
+                    .attr("y2", function (d) {
+                        return d.target.y;
+                    });
+
+
+                link.attr('d', function (d) {
+                    var path = 'M ' + d.source.x + ' ' + d.source.y + ' L ' + d.target.x + ' ' + d.target
+                        .y;
+                    return path;
+                });
+
+                edges_text.attr('transform', function (d, i) {
+                    if (d.target.x < d.source.x) {
+                        bbox = this.getBBox();
+                        rx = bbox.x + bbox.width / 2;
+                        ry = bbox.y + bbox.height / 2;
+                        return 'rotate(180 ' + rx + ' ' + ry + ')';
+                    } else {
+                        return 'rotate(0)';
+                    }
+                });
+
+                // 更新节点
+                node.attr("transform", function (d) {
+                    return "translate(" + d.x + "," + d.y + ")";
+                });
+
+            }
+        });
+    </script>
+</body>
+
+</html>

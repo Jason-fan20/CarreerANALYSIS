@@ -1,0 +1,142 @@
+{
+    "nodes": [{
+            "id": "770",
+            "word": "董事0",
+            "atom": "C",
+            "size": 20
+        },
+        {
+            "id": "771",
+            "word": "董事1",
+            "atom": "C",
+            "size": 20
+        },
+        {
+            "id": "772",
+            "word": "董事2",
+            "atom": "C",
+            "size": 20
+        },
+        {
+            "id": "773",
+            "word": "董事长3",
+            "atom": "C",
+            "size": 24
+        },
+        {
+            "id": "774",
+            "word": "员工4",
+            "atom": "H",
+            "size": 10
+        },
+        {
+            "id": "775",
+            "word": "经理5",
+            "atom": "O",
+            "size": 25
+        },
+        {
+            "id": "776",
+            "word": "经理6",
+            "atom": "O",
+            "size": 25
+        },
+        {
+            "id": "777",
+            "word": "员工7",
+            "atom": "H",
+            "size": 10
+        },
+        {
+            "id": "778",
+            "word": "员工8",
+            "atom": "H",
+            "size": 10
+        },
+        {
+            "id": "779",
+            "word": "员工9",
+            "atom": "H",
+            "size": 10
+        },
+        {
+            "id": "780",
+            "word": "员工10",
+            "atom": "H",
+            "size": 10
+        },
+        {
+            "id": "781",
+            "word": "员工11",
+            "atom": "H",
+            "size": 10
+        },
+        {
+            "id": "782",
+            "word": "员工12",
+            "atom": "H",
+            "size": 10
+        }
+    ],
+    "links": [{
+            "source": "770",
+            "target": "771",
+            "bond": 1
+        },
+        {
+            "source": "771",
+            "target": "772",
+            "bond": 1
+        },
+        {
+            "source": "771",
+            "target": "773",
+            "bond": 1
+        },
+        {
+            "source": "772",
+            "target": "775",
+            "bond": 2
+        },
+        {
+            "source": "772",
+            "target": "776",
+            "bond": 1
+        },
+        {
+            "source": "771",
+            "target": "774",
+            "bond": 1
+        },
+        {
+            "source": "773",
+            "target": "780",
+            "bond": 1
+        },
+        {
+            "source": "773",
+            "target": "781",
+            "bond": 1
+        },
+        {
+            "source": "770",
+            "target": "777",
+            "bond": 2
+        },
+        {
+            "source": "770",
+            "target": "778",
+            "bond": 1
+        },
+        {
+            "source": "770",
+            "target": "779",
+            "bond": 1
+        },
+        {
+            "source": "775",
+            "target": "782",
+            "bond": 1
+        }
+    ]
+}

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body,html, svg, #container {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        font-family: verdana;
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+      }
+
+      #controls {
+        position:absolute;
+        top:0;
+        left:0px;
+        padding:4px;
+        border-bottom: 1px solid #ccc;
+        width:100%;
+        font-size: 0.7em;
+      }
+
+      #controls input {
+        font-size:14px
+      }
+
+      #controls input[type="button"],
+      #controls input[type="submit"] {
+        font-size:18px
+      }
+    </style>
+
+<body>
+<div id="controls">
+  <input type="radio" name="mode" value="select" checked="checked" id="mode-select" onclick="ggraph.set_mode('select')"> <label for="mode-select">Select</label>
+  &nbsp;
+  <input type="button" value="next" onclick="_next()"	  />
+</div>
+</body>
+  
+<!-- Load d3.js -->
+<script src="d3.v4.min.js"></script>
+<script src="jquery.min.js"></script>
+
+<!-- Create a div where the graph will take place -->
+<div>
+  <svg  height=600 width=450></svg>
+</div>
+
+<script>
+ function _next() {
+// select the svg area
+var svg = d3.select("svg");
+var color = d3.scaleOrdinal(d3.schemeCategory20);
+var h=0;
+var str_array=['中国','日本12','日本123'];
+for(var i=0;i<=19;i++)
+{
+if(!(document.getElementById("circle"+i)==null))
+document.getElementById("circle"+i).remove();
+if(!(document.getElementById("text"+i)==null))
+document.getElementById("text"+i).remove();
+}
+
+for(var i=0;i<str_array.length;i++)
+{
+for(var j=i+1;j<str_array.length;j++)
+{
+if(str_array[j].length>str_array[i].length)
+{
+var temp=0; temp=str_array[i]; str_array[i]=str_array[j];str_array[j]=temp;
+}
+}
+}
+
+for(var i=0;i<str_array.length;i++)
+{
+svg.append("circle").attr("cx",20).attr("cy",60+i*20).attr("r", 6).style("fill", color(str_array[i])).attr("id", 'circle'+i)
+svg.append("text").attr("x", 40).attr("y", 65+i*20).text(str_array[i]).style("font-size", "15px").attr("alignment-baseline","right").attr("id", 'text'+i)
+}
+}
+
+</script>
+</html>
