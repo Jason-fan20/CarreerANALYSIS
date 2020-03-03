@@ -1,4 +1,4 @@
-'use strict'
+﻿'use strict'
 
 var ggraph = (function() {
   var started;
@@ -249,7 +249,7 @@ var ggraph = (function() {
     });
 
   var _draw = function(_graph) {
-    groups.clear();
+  //  groups.clear();
 
     container.selectAll('*').remove();
 

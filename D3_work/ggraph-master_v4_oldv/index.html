@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="css/jackwei.slider.css">
+    <script src="http://apps.bdimg.com/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="js/jackwei.slider.js"></script>
+	<script src="https://d3js.org/d3.v4.min.js"></script>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <style type="text/css">
+    </style>
+</head>
+<body>
+<div id="sliderParent" style="padding: 50px;background-color: gray;display: inline-block;">
+</div>
+<script type="text/javascript">
+	var id;
+    var option = {
+        color: 'deepskyblue',
+        width: '400px',
+        progress: 0.3,
+        handleSrc: 'img/slider_handle.png',
+        isCustomText: false
+    };
+	var progress=10;
+    $('#sliderParent')
+        .jackWeiSlider(option)
+        // .setText('2018-4-5 02:39:00')
+        .setProgress(0.6)
+        .setOnStartDragCallback(function () {
+            progress=this.progress;
+        })
+        .setOnDragCallback(function (p) {
+        })
+        .setOnStopDragCallback(function () {
+        });
+
+  	 d3.json("data.json", function(error, graph) {
+		console.log(graph.nodes);
+		 var nodes = graph.nodes,
+         nodeById = d3.map(nodes, function(d) { return d.id; }),
+         links = graph.links,
+         value = links.map(function(d){return d.value}),
+
+       l = []
+       links.forEach(function(link) {
+           var s = nodeById.get(link.source),
+               t = nodeById.get(link.target),
+               y = link.year;
+		if (link.year==1980)
+		{         l.push({source: s, target: t, year: y});}	});
+
+		links = l
+	
+		console.log(links);
+		console.log(nodes);
+		console.log(progress+'2');
+		id=links;
+		
+		}		)
+		d3.interval(function() {
+           console.log(id)
+       },150)
+</script>
+</body>
+</html>

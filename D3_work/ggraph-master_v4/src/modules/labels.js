@@ -23,7 +23,7 @@ var labels = (function() {
 
     var text = label.append('text')
       .attr('cx', 2).attr('cy', 2)
-      .attr('class', 'label').text(member.id+'123')
+      .attr('class', 'label').text(member.id)
 
     return {
       show: function() {

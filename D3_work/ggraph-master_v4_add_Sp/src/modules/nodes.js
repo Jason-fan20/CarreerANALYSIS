@@ -1,8 +1,21 @@
 var nodes = (function() {
   var icount;
   var circle_radius = 5;
-  var color = d3.scaleOrdinal(d3.schemeCategory10);
-
+ var _3c = (function() {
+ var array=[];
+ for(var i=0;i<d3.schemeCategory20.length;i++){
+      array.push(d3.schemeCategory20[i]) 
+}
+for(var i=0;i<d3.schemeCategory20b.length;i++){
+      array.push(d3.schemeCategory20b[i]) 
+}
+for(var i=0;i<d3.schemeCategory20c.length;i++){
+      array.push(d3.schemeCategory20c[i]) 
+}
+return array;
+})
+  var color = d3.scaleOrdinal(_3c());
+    console.log(_3c());
   this.clear = function() {
     //color = d3.scaleOrdinal(d3.schemeCategory10);
   }
