@@ -352,7 +352,7 @@
 		{
 		console.log(typeof str_array[i]);
 		svg.append("circle").attr("cx",20).attr("cy",60+i*20).attr("r", 6).style("fill", color(str_array[i])).attr("id", 'circle'+i)
-		svg.append("text").attr("x", 40).attr("y", 65+i*20).text(str_array[i]+color(str_array[i])).style("font-size", "15px").attr("alignment-baseline","right").attr("id", 'text'+i)
+		svg.append("text").attr("x", 40).attr("y", 65+i*20).text(str_array[i]).style("font-size", "15px").attr("alignment-baseline","right").attr("id", 'text'+i)
 	}
     }
 	
