@@ -207,10 +207,10 @@ var ggraph = (function() {
 
   var charge = function(d) {
     if (d.members[0].type === 'comment') {
-      return -10 * Math.sqrt(d.members[0].id.length);
+      return -1 * Math.sqrt(d.members[0].id.length);
     }
     else {
-      return -50;
+      return -5;
     }
   };
 

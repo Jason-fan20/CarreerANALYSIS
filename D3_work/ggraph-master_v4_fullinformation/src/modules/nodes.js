@@ -1,6 +1,8 @@
 var nodes = (function() {
   var icount;
   var circle_radius = 5;
+  var color_l=[]
+	
  var _3c = (function() {
  var array=[];
  for(var i=0;i<d3.schemeCategory20.length;i++){
@@ -14,8 +16,12 @@ for(var i=0;i<d3.schemeCategory20c.length;i++){
 }
 return array;
 })
-  var color = d3.scaleOrdinal(_3c());
-    console.log(_3c());
+  var color = d3.scaleOrdinal(_3c()).domain(["外交", "国防", "发展和改革委员会", "教育", "科学技术", "工业和信息化", "民族家族事物", "公安", "国家安全", "民政", "司法", "财政", "人力资源", "自然资源", "生态环境", "住房", "交通运输", "水利", "农业农村", "商务", "文化", "卫生健康", "退役军人", "消防", "银行", "审计", "国有资产监督管理", "海关", "税务", "市场监督", "广播电视", "体育", "统计", "国际发展合作", "医疗保障", "参事", "机关事务管理", "信访", "粮食物资储备", "能源", "国防科技", "烟草", "移民", "林业和草原", "铁路", "航空", "邮政", "文物", "医药管理", "煤矿监察", "外汇管理", "药品监督", "知识产权", "部队", "高等院校", "社会保障", "党", "机关"]);
+  str=["外交", "国防", "发展和改革委员会", "教育", "科学技术", "工业和信息化", "民族家族事物", "公安", "国家安全", "民政", "司法", "财政", "人力资源", "自然资源", "生态环境", "住房", "交通运输", "水利", "农业农村", "商务", "文化", "卫生健康", "退役军人", "消防", "银行", "审计", "国有资产监督管理", "海关", "税务", "市场监督", "广播电视", "体育", "统计", "国际发展合作", "医疗保障", "参事", "机关事务管理", "信访", "粮食物资储备", "能源", "国防科技", "烟草", "移民", "林业和草原", "铁路", "航空", "邮政", "文物", "医药管理", "煤矿监察", "外汇管理", "药品监督", "知识产权", "部队", "高等院校", "社会保障", "党", "机关"];		
+  		str.map(function(thing) {
+		//console.log(thing);
+		//console.log(color(thing));
+		})
   this.clear = function() {
     //color = d3.scaleOrdinal(d3.schemeCategory10);
   }
@@ -75,6 +81,7 @@ return array;
       .attr('fill', color(member.type))
       .attr('name', 'default').on("click", function() {
         circle_click(graph, member);
+		
       });
 
     var start = 90;
@@ -104,6 +111,8 @@ return array;
       .attr('fill', color(member.type))
       .attr('name', 'default').on("click", function() {
         circle_click(graph, member);
+		console.log(member.type);
+		console.log(typeof member.type);
       });
 	node=node.on("mouseover", function() {
 		document.getElementById('Node_information').innerHTML=member.circle['_groups'][0][0]['__data__'].details;

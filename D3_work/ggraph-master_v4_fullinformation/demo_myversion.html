@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
   <head>
     <meta charset="utf-8">
@@ -87,6 +87,7 @@
 	var num_1=0;
 	var node_,link_;
 	var type_array=[];
+	var color_l=[];
 	document.getElementById('threshold').value=20;
 	
 				var t = Date.now();
@@ -311,7 +312,8 @@
 		ggraph.draw(ggraph.get_graph())
 	
 	}
-	
+
+
 	function legend() {
 		var svg = d3.select("svg");
 		var h=0;
@@ -329,8 +331,8 @@
 			}
 			return array;
 			})
-		var color = d3.scaleOrdinal(_3c());
-		for(var i=0;i<=19;i++)
+		 var color = d3.scaleOrdinal(_3c()).domain(["外交", "国防", "发展和改革委员会", "教育", "科学技术", "工业和信息化", "民族家族事物", "公安", "国家安全", "民政", "司法", "财政", "人力资源", "自然资源", "生态环境", "住房", "交通运输", "水利", "农业农村", "商务", "文化", "卫生健康", "退役军人", "消防", "银行", "审计", "国有资产监督管理", "海关", "税务", "市场监督", "广播电视", "体育", "统计", "国际发展合作", "医疗保障", "参事", "机关事务管理", "信访", "粮食物资储备", "能源", "国防科技", "烟草", "移民", "林业和草原", "铁路", "航空", "邮政", "文物", "医药管理", "煤矿监察", "外汇管理", "药品监督", "知识产权", "部队", "高等院校", "社会保障", "党", "机关"]);
+		for(var i=0;i<=str_array.length;i++)
 		{
 		if(!(document.getElementById("circle"+i)==null))
 		document.getElementById("circle"+i).remove();
@@ -350,13 +352,13 @@
 		}
 		for(var i=0;i<str_array.length;i++)
 		{
+		console.log(typeof str_array[i]);
 		svg.append("circle").attr("cx",20).attr("cy",60+i*20).attr("r", 6).style("fill", color(str_array[i])).attr("id", 'circle'+i)
-		svg.append("text").attr("x", 40).attr("y", 65+i*20).text(str_array[i]).style("font-size", "15px").attr("alignment-baseline","right").attr("id", 'text'+i)
+		svg.append("text").attr("x", 40).attr("y", 65+i*20).text(str_array[i]+color(str_array[i])).style("font-size", "15px").attr("alignment-baseline","right").attr("id", 'text'+i)
 	}
-	console.log(str_array);
-	console.log('����');
     }
 	
+	   
 	d3.json("data.json", function(error, con) {
        if (error) throw error;
 	   
