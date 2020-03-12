@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-hans">
+<head>
+  <meta charset="utf-8">
+  <title>test dropdown</title>
+  <style>
+  /*隐藏二级菜单*/
+    #drop-down>ul {
+      display: none;
+    }
+    /*显示二级菜单*/
+    #drop-down:hover ul {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div id="drop-down">
+    <p>一级菜单</p>
+      <ul>
+        <li>二级菜单</li>
+        <li>二级菜单</li>
+      </ul>
+  </div>
+</body>
+</html>

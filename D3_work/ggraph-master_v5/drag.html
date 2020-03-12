@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="index.css">
+	    <style>
+      body,html, svg, #container {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        font-family: verdana;
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+      }
+
+      #controls {
+        position:absolute;
+        top:0;
+        left:0px;
+        padding:4px;
+        border-bottom: 1px solid #ccc;
+        width:100%;
+        font-size: 0.7em;
+      }
+
+      #controls input {
+        font-size:14px
+      }
+
+      #controls input[type="button"],
+      #controls input[type="submit"] {
+        font-size:18px
+      }
+	  
+			*{padding:0;margin:0;}
+		.content {
+			margin:0px auto 0;
+			width:300px;
+			min-height: 500px;
+			float:right
+		}
+	  
+		.form-group {
+			width:100%;
+			float:right;
+			margin:5px 0;
+		}
+
+		label{
+			margin-bottom:10px;
+			float:right;			
+		}
+		
+		
+    </style>
+</head>
+<body>
+	<div id="controls">
+	  <input type="button" value="legend" onclick="merge()" />
+    </div>
+	<div id="controls">
+	  <input type="button" value="legend1" onclick="merge()" />
+    </div>
+    <div id="main" class="main"></div>
+	<div id="container"></div>
+    <script src="index.js"></script>
+	<script src="jquery.min.js"></script>
+	<script src="d3.v4.min.js"></script>
+    <script>
+	var temp;
+			
+	d3.json("name_list.json", function(error, con) {
+	temp=con;   
+	select = new $Selector({
+                eleSelector:"#main",
+                options:temp,
+                defaultText:"please select target"
+            });
+	})
+	
+	
+
+	</script>
+	
+</body>
+</html>
