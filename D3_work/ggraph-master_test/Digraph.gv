@@ -1,0 +1,7 @@
+// The Test Table
+digraph {
+	A1 [label="Dot A"]
+	B [label="Dot B"]
+	C [label="Dot C" color=red]
+		A1 -> C [label=test]
+}
