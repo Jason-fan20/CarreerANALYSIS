@@ -1,0 +1,7 @@
+Main.py contains mostly all the code and comment, please use the function in main.py,
+if having question, please read the comment and rewrite the program if necessary.
+
+tips:
+Operate index.html, it will load data.json file to generate a d3 graph
+
+
