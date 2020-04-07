@@ -1,0 +1,11 @@
+Please use 'make.py' to load ins.txt or out_ori,txt then we can genetate 1,2,3... txt(the frequency txt)
+
+A summary of this process is in parsing.pptx, if you are confused about this process, please read it 
+
+Please use'load,temp.py' to load 1.2.3...5.txt to reshape the hanlp result in out_ori.txt
+
+problem:
+when using jvm like this, after using it first time, i have to annotate it otherwise it will generate bugs, maybe you can fix it
+#startJVM(getDefaultJVMPath(), "-Djava.class.path=D:/NLP/hanlp/hanlp-1.7.4.jar;D:/NLP/hanlp",
+#         "-Xms1g",
+#         "-Xmx1g")
