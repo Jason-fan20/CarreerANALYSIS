@@ -209,13 +209,28 @@ def deal_sequence(list_1):
             else:
                 parent=temp[index-1]
                 children=temp[index]
-                first_list.append(creat_leaf_viznode(children,parent))
+                if(not bool(len(first_list))):
+                    first_list.append(creat_ori_viznode(children,parent))
+                    first_list=first_list[-1]['children']
+                else:
+                    name_list=[]
+                    for thing_2 in first_list:
+                        name_list.append(thing_2['name'])
+#                    1print(name_list)
+                    if(children not in name_list):
+                        first_list.append(creat_ori_viznode(children,parent))
+                        first_list=first_list[-1]['children']
+#                        print(first_list)
+#                        print(123)
+                    else:
+                        first_list=first_list[name_list.index(children)]['children']
     return tree_data
                 
 def make_json(tree_data):
     import json
     with open('data.json', 'w') as f:
         json.dump(tree_data, f,ensure_ascii=False)
+        print(tree_data)
 #        print('ok')
         
     def conversion_coding(file_name, before='gbk', after='utf8'):
@@ -243,7 +258,7 @@ def list_del_brackets(list1):
         list2.append(a)
     return list2
 def main(argv=None):
-    with open('total.txt', "r") as f:  #相对路径
+    with open('total.txt', "r",encoding='utf-8') as f:  #相对路径
         # 整个文件内容读入total变量
         total = f.read();
     
@@ -261,7 +276,7 @@ def main(argv=None):
 #    sys.stdout = f
 #    sys.stderr = f # redirect std err, if necessary
     # temps = "['深圳市公安局 办公室', '深圳市公安局 办公室', '深圳市公安局 办公室 调研科', '深圳市公安局 指挥部 调研处 调研科', '深圳市警察局 办公室 警务科']"
-    root=construct_tree(str_list)
+    root=construct_tree(str_list[0:15])
     ###################################viz
     dfs_toviz(root,'')
     tree_data=deal_sequence(total_sequence)

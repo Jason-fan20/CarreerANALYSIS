@@ -149,6 +149,7 @@ def create_vocab(G_list, num_restart, path_length, nodes, time_step, rand=random
 #            walks.append(random_walk(SpaceTimegraph=G, path_length=path_length, rand=rand, start=node))
             if(temp==1):
                 walks.append(process(G,p,q,1,node=node,walks_len=path_length+1,workers=None)[0])
+                print(random_walk(SpaceTimegraph=G, path_length=path_length, rand=rand, start=node))
     print("Vocabulary created")
     return walks
 

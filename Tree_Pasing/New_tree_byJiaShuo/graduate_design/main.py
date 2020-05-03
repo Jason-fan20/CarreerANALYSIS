@@ -4,6 +4,10 @@ from treelib import Node, Tree
 import re   
 import load_oritxt
 import word2vec_cluster
+import networkx as nx
+
+list_this=[]
+nid=0  
 # =============================================================================
 # Del the brackets in txt, list1 is transfromed by txt.readlines() 
 # =============================================================================
@@ -35,7 +39,7 @@ def load_txt(name,del_SZ):
     str_list_index = 0
     # 去掉文本中每条数据最后两个空格
     for s_temp in str_list:
-        str_list[str_list_index] = s_temp[0:-2].replace('深圳市','').strip(' ')
+        str_list[str_list_index] = s_temp[0:-2]
         str_list_index = str_list_index + 1
         
     return str_list
@@ -222,12 +226,7 @@ class CTree(Tree):
             if(pointer.data['count']==0):
                 old_pointer=pointer
                 child_pointer=self.children(pointer.identifier)[0]
-                child_pointer.data['name']=pointer.data['name']+'-'+child_pointer.data['name']
-#                child_pointer.data.setname(pointer.data['name']+'-'+child_pointer.data['name'])
-#                print(child_pointer.data['name'])
-#                print(child_pointer.identifier)
-#                print('====')
-#                print(self.parent(child_pointer.identifier))
+                child_pointer.data['name']=pointer.data['name']+''+child_pointer.data['name']
                 self.move_node(child_pointer.identifier,self.parent(pointer.identifier).identifier)
                 pointer=child_pointer
 #                print(pointer)
@@ -381,7 +380,7 @@ class CTree(Tree):
 # =============================================================================
     def everynode_count(self,node):
         pointer = node
-        if(len(tree.children(pointer.identifier))>=1):
+        if(len(tree.children(pointer.identifier))>=3):
             for thing in tree.children(pointer.identifier):         
                 pointer.data['count']=pointer.data['count']+tree.everynode_count(thing)
                 pointer.data.set_count(pointer.data['count'])
@@ -393,7 +392,8 @@ class CTree(Tree):
         dict1={}
         for pointer in tree.children(0):
             if(pointer.data['count']>=1):
-                dict1[pointer.data['name']]=pointer.data['count']
+                if(pointer.data['name']):
+                    dict1[pointer.data['name']]=pointer.data['count']
         after = dict(sorted(dict1.items(), key=lambda e: e[1],reverse=True))
         self.fcl=after
     
@@ -459,8 +459,36 @@ class CTree(Tree):
                         time_record.append(time)
                         self.vector.append(thing.split('.xls')[0]+' '+time+' '+ins)
 #        print(self.vector)
-        print(small_time)
-        print(max_time)
+#        print(small_time)
+#        print(max_time)
+                        
+    def txt200_vector_full(self,path):
+        self.vector=[]
+        import os
+        small_time=9999
+        max_time=0
+        def file_name(file_dir):
+            for root, dirs, files in os.walk(file_dir):
+#                print(root)  # 当前目录路径
+#                print(dirs)  # 当前路径下所有子目录
+#                print(files)  # 当前路径下所有非目录子文件
+                return files
+        for thing in file_name(path):
+            with open(os.path.join(path,thing),"r",encoding='utf-8') as f:  #相对路径
+                lines=f.readlines()
+                time_record=[]
+                for index,line in enumerate(lines):
+                    time=line.split(' ')[0].split('时间：')[1][0:4]
+                    ins=line.split(' ')[1].replace('深圳市','').strip(' ')
+                    if(time not in time_record):
+                        if(index==len(lines)-1):
+                            if(small_time>int(time)):
+                                small_time=int(time)
+                            if(max_time<int(time)):
+                                max_time=int(time)
+                        time_record.append(time)
+                        self.vector.append(thing.split('.xls')[0]+' '+time+' '+ins)
+                        
     def generate_gmlfile(self,path):
         import networkx as nx
         import os
@@ -531,40 +559,185 @@ class CTree(Tree):
 #        print(dict1)
         
 #        print(dict1)
+    def get_oneyear_graphbyfcl(self,year,fcl_countmin,path):
+            import os
+            load_oritxt.mkdir(path)
+            time=year
+            edge=[]
+            G = nx.Graph()
+            for index,thing in enumerate(self.vector):
+    #                print(thing)
+                name=thing.split(' ')[0]
+                time_0=int(thing.split(' ')[1])
+                ins=thing.split(' ')[2]
+                for thing1 in self.vector[index+1:]:
+                    name1=thing1.split(' ')[0]
+                    time_1=int(thing1.split(' ')[1])
+                    ins1=thing1.split(' ')[2]
+#                    print(tree.ins_isinfcl(name,fcl_countmin))
+                    if(time_0 == time and time_1==time and tree.ins_isinfcl(ins,fcl_countmin) and tree.ins_isinfcl(ins1,fcl_countmin)):
+                        if(name not in G.nodes()):
+                            G.add_node(name)
+                            G.nodes[name]['ins']=ins.replace('\n','')
+                        if(name1 not in G.nodes()):
+                            G.add_node(name1)
+                            G.nodes[name1]['ins']=ins1.replace('\n','')
+                        edge_single=name+' '+name1
+#                        if(ins1==ins and edge_single not in edge):              
+#                            edge.append(edge_single)
+#                            G.nodes[name1]['ins']=ins1
+#                            G.nodes[name]['ins']=ins1
+            return G
+    
+    def ins_isinfcl(self,ins,fcl_countmin):
+        for key,value in self.fcl.items():
+            if(key in ins):
+                return True
+        return False
+    
+    def get_child_node_fromins(self,ins_list):
+        node_list=[]
+        parent_node=self.get_node(0)
+        while(len(self.children(parent_node.identifier))>=1):
+            for thing in self.children(parent_node.identifier):
+                if(ins_list[0]==thing.data['name']):
+                    parent_node=thing
+                    node_list.append(thing)
+                    
+    def print_acc_fcl(self,count,total):
+        fcl =[thing for thing in self.fcl.keys()][0:count]
+        root=self.get_node(0)
+        for thing in fcl:
+            child_node=self.getchildrennode_byname(root,thing)
+            self.dfs_fcl(child_node,thing)   
+    def dfs_fcl(self,node,str1):
+        global list_this
+        global nid
+        if(len(self.children(node.identifier))>0):
+            for thing in self.children(node.identifier):
+                self.dfs_fcl(thing,str1+' '+thing.data['name'])
+        else:
+#            print(str1)
+            temp={}
+            temp[str(nid)]=str1
+            list_this.append(temp)
+            nid=nid+1
+            pass
         
+    def filter_word_inlist(self,list1):
+        list2=[]
+        with open('filter_word.txt', 'r',encoding='utf-8') as  f:
+            line=f.readlines()
+#            f.close()
+        filter_word=[]
+        for thing in line:
+            filter_word.append(thing.replace('\n','').strip(' '))
+        print(filter_word)
+#        print(line)
+        for thing in list1:
+            for word in filter_word:
+                thing=thing.replace(word,'').strip(' ')
+            import random
+            if(random.random()):
+                list2.append(thing.replace(word,'').strip(' '))
+        return list2
+                              
 tree = CTree()
 import sys
-#f = open('output_result1.txt', 'a')
-#
-#sys.stdout = f
-#sys.stderr = f # redirect std err, if necessary
-name='out_ori.txt'
+name='total.txt'
 del_SZ=1 #'delete '深圳市' or not
 list1=load_txt(name,del_SZ)
-list1=list1[0:]
+list1=tree.filter_word_inlist(list1)
 tree.build_tree(list1)
-tree.get_first_child_bycount()
-tree.del_repeat_element()
-
-#tree.txt200_vector('output')
+tree.compress_tree()
+tree.to_graphviz('source1.gv')
+tree.show_graphviz('source1.gv')
+tree.show(data_property="name")
+#tree.everynode_count(tree.get_node(0))
+#tree.get_first_child_bycount()
+#tree.del_repeat_element()
+#tree.txt200_vector_full('output')
+#print(tree.fcl)
+#for thing,value in tree.fcl.items():
+#    print(value)
 #tree.generate_gmlfile('gml_file')
 #tree.move_node(4, 8)
-tree.add_sequence("中欧 国际 阿妹 姐姐")
-prefix_last_note = tree.search_prefix("中欧,国际,阿妹,姐姐")
-prefix_node_list = tree.get_prefix("姐姐")
+#tree.add_sequence("中欧 国际 阿妹 姐姐")
+#prefix_last_note = tree.search_prefix("中欧,国际,阿妹,姐姐")
+#prefix_node_list = tree.get_prefix("姐姐")
 #print(prefix_node_list)
 #for n in prefix_node_list:
 #    print(n.data['name'])
-tree.everynode_count(tree.get_node(0))
+#print(tree.fcl)
 #print(tree.get_ins_byins('深圳特区'))
 #for thing in tree.children(0):
 #    if(thing.data['count']>2):
 #       print(thing.data['name']+str(thing.data['count']))
-tree.show(data_property="count")
-tree.compress_tree()
-tree.tree_d3()
-tree.to_graphviz('source1.gv')
-tree.show_graphviz('source1.gv')
-tree.show(data_property="name")
+#tree.show(data_property="count")
+#G=tree.get_oneyear_graphbyfcl(2008,2,'one_year')
+##print(tree.vector)
+# =============================================================================
+# 
+# =============================================================================
+#G1 = nx.Graph()
+#G1.add_node('root')
+#for thing in G.nodes():
+##    print(123)
+#    temp=1
+#    if(tree.get_twonode_fromins(G.node[thing]['ins'])):
+#        node1,node2=tree.get_twonode_fromins(G.node[thing]['ins'])
+#        for thing in  nx.neighbors(G1,'root'):
+#            if(thing==node1.data['name']):
+#                temp=0
+#        if(temp==1):
+#            G1.add_node(node1.data['name'])
+##            print(node1.data['name'])
+#            G1.add_edge('root',node1.data['name'],weight=1)
+#        next_node=node1.data['name']
+#        temp=1
+#        for thing in  nx.neighbors(G1,next_node):
+#            if(thing==node2.data['name']):
+#                temp=0
+#        if(temp==1):
+#            G1.add_node(node2.data['name'])
+#            G1.add_edge(next_node,node2.data['name'],weight=0.2)
+#        print(str(node1.data['name'])+' '+str(node2.data['name']))
+#
+##G1.add_edge()
+#import networkx as nx
+#import matplotlib.pyplot as plt
+#print(nx.info(G1))
+##for thing in nx.neighbors(G1,'root'):
+##    print(thing)
+#    
+#plt.figure(figsize=(10,7)) 
+##pos =G1.nodes()
+#nx.draw_networkx(G1)
+# =============================================================================
+# 
+# =============================================================================
+#remove_file('output_result1.txt')
+#f = open('output_result1.txt', 'a')
+#
+#sys.stdout = f
+#sys.stderr = f # redirect std err, if necessary
+#f.close()
+#f = open('output_result1.txt', 'r')
+#line =[thing.replace('\n','') for thing in  f.readlines()]
+#print(line)
+#tree.print_acc_fcl(30,200)
+#print(tree.fcl)
+#print(list_this)
+        
+#print(tree.get_twonode_fromins('贸易工业局贸易市场处'))
+#print(tree.fcl)
+#print(tree.fcl)
+#print(G.nodes())
+#print(G.edges())
+#print(tree.fcl)
+#tree.tree_d3()
+#tree.to_graphviz('source1.gv')
+#tree.show_graphviz('source1.gv')
+#tree.show(data_property="name")
 #print(tree.get_node(1).data['count'])
 #print(tree.to_json(with_data=True))

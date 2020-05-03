@@ -538,33 +538,33 @@ import sys
 #
 #sys.stdout = f
 #sys.stderr = f # redirect std err, if necessary
-name='out_ori.txt'
+name='total_after.txt'
 del_SZ=1 #'delete '深圳市' or not
 list1=load_txt(name,del_SZ)
-list1=list1[0:]
+list1=list1[0:15]
 tree.build_tree(list1)
-tree.get_first_child_bycount()
-tree.del_repeat_element()
-
-#tree.txt200_vector('output')
-#tree.generate_gmlfile('gml_file')
-#tree.move_node(4, 8)
-tree.add_sequence("中欧 国际 阿妹 姐姐")
-prefix_last_note = tree.search_prefix("中欧,国际,阿妹,姐姐")
-prefix_node_list = tree.get_prefix("姐姐")
-#print(prefix_node_list)
-#for n in prefix_node_list:
-#    print(n.data['name'])
-tree.everynode_count(tree.get_node(0))
-#print(tree.get_ins_byins('深圳特区'))
-#for thing in tree.children(0):
-#    if(thing.data['count']>2):
-#       print(thing.data['name']+str(thing.data['count']))
-tree.show(data_property="count")
-tree.compress_tree()
-tree.tree_d3()
-tree.to_graphviz('source1.gv')
-tree.show_graphviz('source1.gv')
-tree.show(data_property="name")
+##tree.get_first_child_bycount()
+##tree.del_repeat_element()
+#
+##tree.txt200_vector('output')
+##tree.generate_gmlfile('gml_file')
+##tree.move_node(4, 8)
+#tree.add_sequence("中欧 国际 阿妹 姐姐")
+#prefix_last_note = tree.search_prefix("中欧,国际,阿妹,姐姐")
+#prefix_node_list = tree.get_prefix("姐姐")
+##print(prefix_node_list)
+##for n in prefix_node_list:
+##    print(n.data['name'])
+##tree.everynode_count(tree.get_node(0))
+##print(tree.get_ins_byins('深圳特区'))
+##for thing in tree.children(0):
+##    if(thing.data['count']>2):
+##       print(thing.data['name']+str(thing.data['count']))
+##tree.show(data_property="count")
+##tree.compress_tree()
+##tree.tree_d3()
+#tree.to_graphviz('source1.gv')
+#tree.show_graphviz('source1.gv')
+#tree.show(data_property="name")
 #print(tree.get_node(1).data['count'])
 #print(tree.to_json(with_data=True))

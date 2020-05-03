@@ -100,29 +100,31 @@ with open('out_del_brackets.txt',"w",encoding='utf-8') as f:  #相对路径
 #print(total[0:500])
 #print(re.search(total[0:500],'（'))
 #print(list_del_brackets(total[0:500]))
-path='file'
-mkdir(path)
-f1=None
-small_time=0
-with open('out_del_brackets.txt',"r",encoding='utf-8') as f:  #相对路径
-        # 整个文件内容读入total变量
-        total = f.readlines();
-        for thing in total:
-            if get_name(thing):
-                name=thing[0:int(get_name(thing)[1])]
-            if(get_strtime(thing)):
-                begin=int(get_strtime(thing)[0])
-                if(begin==0):
-                    end=int(get_strtime(thing)[1])
-#                    print(int(thing[begin:begin+4]))
-                    if(int(thing[begin:begin+4])>small_time):
-                        small_time=int(thing[begin:begin+4])
-#                        print(small_time)
-#                        print(1)
-                    with open(os.path.join(path,name+'.txt'),"a",encoding='utf-8') as f1:
-                         
-                         f1.write(('时间：'+thing[begin:end])+' '+thing[end:].strip(' '))
+def main():
+    path=''
+    mkdir(path)
+    f1=None
+    small_time=0
+    with open('out_del_brackets.txt',"r",encoding='utf-8') as f:  #相对路径
+            # 整个文件内容读入total变量
+            total = f.readlines();
+            for thing in total:
+                if get_name(thing):
+                    name=thing[0:int(get_name(thing)[1])]
+                if(get_strtime(thing)):
+                    begin=int(get_strtime(thing)[0])
+                    if(begin==0):
+                        end=int(get_strtime(thing)[1])
+    #                    print(int(thing[begin:begin+4]))
+                        if(int(thing[begin:begin+4])>small_time):
+                            small_time=int(thing[begin:begin+4])
+    #                        print(small_time)
+    #                        print(1)
+                        with open(os.path.join(path,name+'.txt'),"a",encoding='utf-8') as f1:
+                             
+                             f1.write(('时间：'+thing[begin:end])+' '+thing[end:].strip(' '))
+
                          
 
-print(small_time)
+#print(small_time)
 #print(list1)

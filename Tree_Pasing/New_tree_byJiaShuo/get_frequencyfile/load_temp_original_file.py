@@ -7,9 +7,12 @@ Created on Wed Mar 18 14:44:20 2020
 import re
 #import total2viz
 from jpype import *
-#startJVM(getDefaultJVMPath(), "-Djava.class.path=D:/NLP/hanlp/hanlp-1.7.4.jar;D:/NLP/hanlp",
-#         "-Xms1g",
-#         "-Xmx1g")
+try:
+    startJVM(getDefaultJVMPath(), "-Djava.class.path=D:/NLP/hanlp/hanlp-1.7.4.jar;D:/NLP/hanlp",
+             "-Xms1g",
+             "-Xmx1g")
+except Exception:
+    pass
 
 def get_strtime(text):
  text = text.replace("年", "-").replace("月", "-").replace("日", " ").replace("/", "-").strip()
@@ -67,7 +70,7 @@ for index,thing in enumerate(data):
         if s:
             data1.append(thing[s.span()[1]+2:])
 data=data1
-times=3
+times=4
 str_=[]
 num_=[]
 for thing in range(1,times):  
@@ -116,13 +119,28 @@ def is_Chinese(word):
             return True
     return False
 
- 
+def find_firstchar(str1,str_1_list):
+    str_list=list(str1)
+    count=0
+    for each_char in str_list:
+        count+=1
+        for str_1 in str_1_list:
+            try:
+#                print(''.join(str_list[count:count+len(str_1)])+' '+str_1)
+#                print(str_1)
+                if(count+len(str_1)<len(str1)):
+                    if (''.join(str_list[count:count+len(str_1)])==str_1):
+#                       print(str_1)
+                       return count+len(str_1)
+            except Exception:
+                continue
+    return False
 with open("total.txt","w") as f:
         dict_=[]
-        for index,thing in enumerate(data):
+        for index,thing in enumerate(data[0:]):
 #            if index<10:
         #            term_list = CRFnewSegment.seg(thing)
-                        source=thing
+                        source=thing.replace('\n','').strip(' ')
                         term_list = CRFnewSegment.seg(source)
                         mid_temp=-1
 #                        print(term_list)
@@ -131,12 +149,24 @@ with open("total.txt","w") as f:
                             thing_1=str(thing_1)
                             if 'nt' in thing_1 and 'nnt' not in thing_1:
                                 first_element=thing_1.split('/')[0]
+#                                print(first_element)
                                 mid_temp=index_1
-                                total_list.append(first_element)
+                                thing_1=first_element
+                                while(find_firstchar(thing_1,str_)):
+                                    total_list.append(thing_1[0:find_firstchar(thing_1,str_)])
+#                                    print(1)
+                                    thing_1=thing_1[find_firstchar(thing_1,str_):]
+                                if(thing_1):
+                                    total_list.append(thing_1)
+#                                    print(thing_1)
                                 break
+#                            else:
+#                                total_list.append(thing_1.split('/')[0])
 #                        print('f is '+first_element)
                         end=False
+#                        print("?")
                         for index_1,thing_1 in enumerate(term_list):
+                            temp=0
                             if(index_1>mid_temp and is_Chinese(str(thing_1)[0])):
                                 thing_1=str(thing_1)
                                 for thing in str_:
@@ -148,19 +178,25 @@ with open("total.txt","w") as f:
                                                 element=element+str(term_list[time_temp]).split('/')[0]
                                             total_list.append(element)
                                             mid_temp=index_1;
+                                            temp=1
                                             break;
+                                if(temp==0):
+                                    first_element=thing_1.split('/')[0]
+    #                                print(first_element)
+                                    mid_temp=index_1
+                                    thing_1=first_element
+                                    while(find_firstchar(thing_1,str_)):
+                                        total_list.append(thing_1[0:find_firstchar(thing_1,str_)])
+    #                                    print(1)
+                                        thing_1=thing_1[find_firstchar(thing_1,str_):]
+                                    if(thing_1):
+                                        total_list.append(thing_1)
+#                                        print(total_list)
 #                                    print('pri'+str(end))
 #                                    if(end==False and target_in_termlist(thing[0:len(str_)],index_1,term_list)==True):
 #                                        print(target_in_termlist(thing[0:len(str_)],index_1,term_list))
 #                                        print(end)
 #                                    print(end)
-                                    end=target_in_termlist(thing[0:len(str_)],index_1,term_list) or end
-#                                print(end)
-                                if(end==False and term_list[index_1]!=None):
-#                                    total_list.append(str(term_list[index_1]).split('/')[0])
-                                    print(term_list)
-#                                    print(thing_1)
-                                    pass
                                 
 #                        print('final is')
 #                        print(total_list)
@@ -169,7 +205,9 @@ with open("total.txt","w") as f:
 #                        print(total_list)
                         for thing in total_list:
                             str_mid=str_mid+thing+' ';
-                        str_mid=str_mid+' '+'\n';
+                        if(total_list):
+                            str_mid=str_mid+' '+'\n';
+                            str_mid=str_mid
                         f.write(str_mid) 
 #total2viz.main()
 #shutdownJVM()                      
