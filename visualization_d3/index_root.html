@@ -35,6 +35,7 @@
 <div >
         <input name="name" type="button" onClick="next_1();" value="next_1">
 		<input name="name" type="button" onClick="last_1();" value="last_1">
+		<input name="name" type="button" onClick="show_allsubnode();" value="show_subnode">
 		<input type="text" placeholder="0" id="Nth" />
 		<input name="name" type="button" onClick="update_();" value="Enter">
 		|
@@ -47,18 +48,16 @@
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <script>
 
-
+height_all=500
 // ************** Generate the tree diagram	 *****************
 var margin = {top: 20, right: 120, bottom: 20, left: 120},
-	width = 960 - margin.right - margin.left,
-	height = 500 - margin.top - margin.bottom;
-	
+	width = 1500 - margin.right - margin.left,
+	height = 6000 - margin.top - margin.bottom,
+	height_all=height;
 var i = 0,
 	duration = 750,
 	root;
 
-var tree = d3.layout.tree()
-	.size([height, width]);
 
 var diagonal = d3.svg.diagonal()
 	.projection(function(d) { return [d.y, d.x]; });
@@ -75,11 +74,10 @@ var svg = d3.select("body").append("svg")
 	root.y0=0;
 	root.children_=root.children;
 	total_length=root.children.length;
-	console.log(root)
 	root0=root
 	root0.children=[]
 	///update(root);
-	d3.select(self.frameElement).style("height", "500px");
+	d3.select(self.frameElement).style("height", "2000px");
 	///show only the children of root
 	///next_1();
   })
@@ -91,7 +89,8 @@ function next_1(){
 	root0.children[0]=root.children_[scroll_num];
 	root0.x0=height/2;
 	root0.y0=0;
-	update(root0);
+	height_all=get_children_num(root0)*20<500?500:get_children_num(root0)*20;
+	update(root0,height_all);
 	document.getElementById('Nth data').innerHTML = scroll_num+1;
       }
 	  
@@ -102,19 +101,55 @@ function last_1(){
 	root0.children[0]=root.children_[scroll_num];
 	root0.x0=height/2;
 	root0.y0=0;
-	update(root0);
+	height_all=get_children_num(root0)*20<500?500:get_children_num(root0)*20;
+	update(root0,height_all);
 	document.getElementById('Nth data').innerHTML = scroll_num+1;
   
       }
-function update(source) {
+	 
+function show_allsubnode()
+{
+	root0.children=[]
+	root0.children=root.children_
+	for (index in root0.children)
+	if(root0.children[index].children!== undefined)
+	{
+	root0.children[index]._children=root0.children[index].children;
+	root0.children[index].children=null
+	}
+	root0.x0=height/2;
+	root0.y0=0;
+	height_all=get_children_num(root0)*20<500?500:get_children_num(root0)*20;
+	update(root0,height_all);
+	document.getElementById('Nth data').innerHTML = 99999;
+}
+	 
+function get_children_num(source){
+	num=0;
+	if(source.children!== undefined)
+	{
+	for (index in source.children)
+	{
+	num=num+get_children_num(source.children[index]);
+	}
+	}
+	else
+	{
+	return 1;
+	}
+	return num;
+}
 
+function update(source,height=height_all) {
+
+  var tree = d3.layout.tree()
+	.size([height, width])
   // Compute the new tree layout.
   var nodes = tree.nodes(root0).reverse(),
 	  links = tree.links(nodes);
-	console.log(nodes)
   // Normalize for fixed-depth.
-  nodes.forEach(function(d) { d.y = d.depth * 180; });
-
+  nodes.forEach(function(d) { d.y = d.depth * 180;});
+	
   // Update the nodes…
   var node = svg.selectAll("g.node")
 	  .data(nodes, function(d) { return d.id || (d.id = ++i); });
@@ -191,13 +226,11 @@ function update(source) {
 	d.x0 = d.x;
 	d.y0 = d.y;
   });
-  ///console.log(nodes)
 }
 
 function update_one(source) {
 
   // Compute the new tree layout.
-  console.log(source);
   var nodes = tree.nodes(source).reverse(),
 	  links = tree.links(nodes);
 
@@ -290,7 +323,8 @@ root0.children=[]
 root0.children[0]=root.children_[scroll_num];
 root0.x0=height/2;
 root0.y0=0;
-update(root0);
+height_all=get_children_num(root0)*20<500?500:get_children_num(root0)*20;
+update(root0,height_all);
 document.getElementById('Nth data').innerHTML = scroll_num+1;
 }
 // Toggle children on click.
@@ -303,6 +337,16 @@ function click(d) {
 	d._children = null;
   }
   update(d);
+}
+
+function open_close(d) {
+  if (d.children) {
+	d._children = d.children;
+	d.children = null;
+  } else {
+	d.children = d._children;
+	d._children = null;
+  }
 }
 
 </script>
